@@ -3,6 +3,8 @@ import express from "express";
 const app = express();
 const port = 8000;
 
+console.log("hey");
+
 app.use(express.json()); // for parsing application/json
 
 //this is fake data
