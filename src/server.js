@@ -1,5 +1,5 @@
 import express from "express";
-import { MongoClient } from "mongodb";
+import { db, connectToDb } from "./db.js";
 //creates express app
 const app = express();
 const port = 8000;
@@ -10,9 +10,6 @@ app.use(express.json());
 //get route to fetch article
 app.get("/api/articles/:name", async function (req, res) {
     const { name } = req.params;
-    const client = new MongoClient("mongodb://127.0.0.1:27017");
-    await client.connect();
-    const db = client.db("react-blog-db");
     const article = await db.collection("articles").findOne({ name });
     if (article) {
         res.json(article);
@@ -24,9 +21,6 @@ app.get("/api/articles/:name", async function (req, res) {
 //put route for upvoting articles
 app.put("/api/articles/:name/upvote", async (req, res) => {
     const { name } = req.params;
-    const client = new MongoClient("mongodb://127.0.0.1:27017");
-    await client.connect();
-    const db = client.db("react-blog-db");
 
     await db.collection("articles").updateOne(
         { name },
@@ -48,9 +42,6 @@ app.put("/api/articles/:name/upvote", async (req, res) => {
 app.post("/api/articles/:name/comments", async (req, res) => {
     const { postedBy, text } = req.body;
     const { name } = req.params;
-    const client = new MongoClient("mongodb://127.0.0.1:27017");
-    await client.connect();
-    const db = client.db("react-blog-db");
 
     await db.collection("articles").updateOne(
         { name },
@@ -66,7 +57,10 @@ app.post("/api/articles/:name/comments", async (req, res) => {
     }
 });
 
-//listening app on port
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+connectToDb(() => {
+    console.log("successfully connected to database");
+    //listening app on port
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`);
+    });
 });
