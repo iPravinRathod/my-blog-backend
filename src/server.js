@@ -52,7 +52,6 @@ app.get("/api/articles/:name", async function (req, res) {
     if (article) {
         const upvoteIds = article.upvoteIds || [];
         article.canUpvote = uid && !upvoteIds.includes(uid);
-        console.log("article" + JSON.stringify(article));
         res.json(article);
     } else {
         res.sendStatus(404);
@@ -116,10 +115,11 @@ app.post("/api/articles/:name/comments", async (req, res) => {
     }
 });
 
+const PORT = process.env.PORT || 8000;
+
 connectToDb(() => {
-    console.log("successfully connected to database");
-    //listening app on port
-    app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`);
+    console.log("Successfully connected to database!");
+    app.listen(PORT, () => {
+        console.log("Server is listening on port " + PORT);
     });
 });
