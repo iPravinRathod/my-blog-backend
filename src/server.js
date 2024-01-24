@@ -2,6 +2,7 @@ import fs from "fs";
 import admin from "firebase-admin";
 import express from "express";
 import { db, connectToDb } from "./db.js";
+import { log } from "console";
 
 //load credentials information
 const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
@@ -41,6 +42,7 @@ app.get("/api/articles/:name", async function (req, res) {
     if (article) {
         const upvoteIds = article.upvoteIds || [];
         article.canUpvote = uid && !upvoteIds.includes(uid);
+        console.log("article" + JSON.stringify(article));
         res.json(article);
     } else {
         res.sendStatus(404);
