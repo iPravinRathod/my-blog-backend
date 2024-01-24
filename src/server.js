@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import admin from "firebase-admin";
 import express from "express";
+import "dotenv/config";
 import { db, connectToDb } from "./db.js";
 
 import { fileURLToPath } from "url";
@@ -72,9 +73,13 @@ app.put("/api/articles/:name/upvote", async (req, res) => {
     const { uid } = req.user;
 
     const article = await db.collection("articles").findOne({ name });
+    console.log("uid" + JSON.stringify(req.user));
+    console.log("article" + JSON.stringify(article));
+
     if (article) {
         const upvoteIds = article.upvoteIds || [];
         const canUpvote = uid && !upvoteIds.includes(uid);
+        console.log("canUpvote" + JSON.stringify(canUpvote));
         if (canUpvote) {
             await db.collection("articles").updateOne(
                 { name },
@@ -88,7 +93,7 @@ app.put("/api/articles/:name/upvote", async (req, res) => {
         const updatedArticle = await db
             .collection("articles")
             .findOne({ name });
-
+        console.log("updatedArticle" + JSON.stringify(updatedArticle));
         res.json(updatedArticle);
     } else {
         res.send(`That article doesn\'t exist`);
