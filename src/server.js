@@ -3,6 +3,7 @@ import admin from "firebase-admin";
 import express from "express";
 import { db, connectToDb } from "./db.js";
 
+//load credentials information
 const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
 admin.initializeApp({
     credential: admin.credential.cert(credentials),
@@ -22,9 +23,12 @@ app.use(async (req, res, next) => {
         try {
             req.user = await admin.auth().verifyIdToken(authtoken);
         } catch (error) {
-            res.sendStatus(400);
+            return res.sendStatus(400);
         }
     }
+
+    req.user = req.user || {};
+
     next();
 });
 
