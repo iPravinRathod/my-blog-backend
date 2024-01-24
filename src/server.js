@@ -1,8 +1,12 @@
 import fs from "fs";
+import path from "path";
 import admin from "firebase-admin";
 import express from "express";
 import { db, connectToDb } from "./db.js";
-import { log } from "console";
+
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 //load credentials information
 const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
@@ -16,6 +20,12 @@ const port = 8000;
 
 // for parsing application/json
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "../build")));
+
+app.get(/^(?!\/api).+/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../build/index.html"));
+});
 
 //middleware
 app.use(async (req, res, next) => {
