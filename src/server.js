@@ -2,7 +2,6 @@ import fs from "fs";
 import admin from "firebase-admin";
 import express from "express";
 import { db, connectToDb } from "./db.js";
-import { log } from "console";
 
 //load credentials information
 const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
@@ -16,6 +15,8 @@ const port = 8000;
 
 // for parsing application/json
 app.use(express.json());
+
+app.use(express.static);
 
 //middleware
 app.use(async (req, res, next) => {
